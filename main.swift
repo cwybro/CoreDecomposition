@@ -9,6 +9,6 @@ experiment.add(withId: "SemiCore") {
 }
 
 print("Running experiments")
-let result = experiment.run(trials: 3, internalLoops: 3)
+let result = experiment.run(trials: 1, internalLoops: 1)
 print("Results:")
 print("-- Average: \(result.average)\n")
