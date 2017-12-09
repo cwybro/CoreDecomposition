@@ -1,5 +1,7 @@
 # CoreDecomposition
 
+Experiments testing Swift implementations of Core Decomposition algorithms from various authors.
+
 ### Compile
 Run the following command to compile the Swift program:
 
