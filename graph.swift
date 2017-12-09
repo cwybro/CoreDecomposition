@@ -4,11 +4,15 @@ public struct Graph {
     public var adjList: [[Int]]
 
     public enum RunType {
-      case semiCore
+    case semiCore, bottomUp
     }
 
     public var size: Int {
         return adjList.count
+    }
+
+    public var empty: Bool {
+      return adjList.isEmpty
     }
 
     // Convenience init with filename
@@ -28,11 +32,11 @@ public struct Graph {
 
 // MARK: - Helper methods
 extension Graph {
-  public func getVertexNum() -> Int {
+  public func vertexNum() -> Int {
     return self.size
   }
 
-  public func getMaxDegree() -> Int {
+  public func maxDegree() -> Int {
     var max = 0
     adjList.forEach { neighbors in
       if neighbors.count > max {
@@ -42,12 +46,26 @@ extension Graph {
     return max
   }
 
-  public func getVertexDegree(_ vertex: Int) -> Int {
+  public func minDegree() -> Int {
+    var min = maxDegree()
+    adjList.forEach { neighbors in
+      if neighbors.count < min {
+        min = neighbors.count
+      }
+    }
+    return min
+  }
+
+  public func vertexDegree(_ vertex: Int) -> Int {
     return adjList[vertex].count
   }
 
-  public func getNeighbors(_ vertex: Int) -> [Int] {
+  public func neighbors(_ vertex: Int) -> [Int] {
     return adjList[vertex]
+  }
+
+  public mutating func sorted() {
+    adjList.sort { $0.count < $1.count }
   }
 }
 
@@ -57,6 +75,25 @@ extension Graph {
     public func kCore(type: RunType) -> [Int] {
         switch type {
         case .semiCore: return SemiCore.run(self)
+        case .bottomUp:
+          let result = BottomUp.run(self)
+          return result.normalizeOutput()
         }
+    }
+}
+
+// MARK: - Helper for BottomUp algorithm
+extension Array where Element == [Int] {
+    func normalizeOutput() -> [Int] {
+        let max = self.flatMap { $0}.max()!
+        var result = [Int](repeating: 0, count: max+1)
+
+        for (index, internalArr) in self.enumerated() {
+            for num in internalArr {
+                result[num] = index
+            }
+        }
+
+        return result
     }
 }

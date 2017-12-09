@@ -1,11 +1,15 @@
 import Foundation
 
-let graph = Graph(fileName: "graphs/path_1000")
+let graph = Graph(fileName: "graphs/graph_10")
 
 var experiment = Experiment()
 
-experiment.add(withId: "SemiCore") {
-  graph.kCore(type: .semiCore)
+// experiment.add(withId: "SemiCore") {
+//   graph.kCore(type: .semiCore)
+// }
+
+experiment.add(withId: "BottomUp") {
+  graph.kCore(type: .bottomUp)
 }
 
 print("Running experiments")
