@@ -12,7 +12,25 @@ public struct Graph {
     }
 
     public var empty: Bool {
-      return adjList.isEmpty
+      var empty = true
+
+      adjList.forEach { arr in
+        if !arr.isEmpty {
+          empty = false
+        }
+      }
+      return empty
+    }
+
+    public var nextVertex: Int {
+      var v = 0
+      for (index, arr) in adjList.enumerated() {
+          if !arr.isEmpty {
+              v = index
+              break
+          }
+      }
+      return v
     }
 
     // Convenience init with filename
@@ -67,6 +85,31 @@ extension Graph {
   public mutating func sorted() {
     adjList.sort { $0.count < $1.count }
   }
+
+  public func vertexListSortedByDegree() -> [Int] {
+    let vertices = Array(0..<adjList.count)
+    return vertices.sorted { vertexDegree($0) < vertexDegree($1) }
+  }
+
+  public func vertexWith(degree: Int) -> Bool {
+    var present = false
+    adjList.forEach {
+      if $0.count <= degree {
+        present = true
+      }
+    }
+    return present
+  }
+
+  // Removes vertex & all edges incident to vertex
+  public mutating func delete(vertex: Int) {
+    adjList.remove(at: vertex)
+
+    for (index, arr) in adjList.enumerated() {
+        let newArr = arr.filter { $0 != vertex }
+        adjList[index] = newArr
+    }
+  }
 }
 
 // MARK: - Solutions
@@ -77,6 +120,7 @@ extension Graph {
         case .semiCore: return SemiCore.run(self)
         case .bottomUp:
           let result = BottomUp.run(self)
+          print("RESULT: \(result)")
           return result.normalizeOutput()
         }
     }
