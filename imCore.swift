@@ -3,6 +3,8 @@ import Foundation
 public struct IMCore {
 
   public static func run(_ graph: Graph) -> [Int] {
+    let startMem = report_memory()
+
     var mutGraph = graph
 
     var results = [Int](repeating: 0, count: mutGraph.vertices.count)
@@ -31,6 +33,7 @@ public struct IMCore {
       results[vert] = finalDegree
     }
 
+    print("MEM USED BY: IMCore -- \(report_memory() - startMem)")
     return results
   }
 }
