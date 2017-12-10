@@ -30,8 +30,8 @@ func fullTest(_ graphs: [String]) {
       graph.kCore(type: .semiCore)
     }
 
-    experiment.add(withId: "BottomUp") {
-      graph.kCore(type: .bottomUp)
+    experiment.add(withId: "IMCore") {
+      graph.kCore(type: .imCore)
     }
 
     let result = experiment.run(trials: 3, internalLoops: 1)
@@ -50,16 +50,11 @@ func verifyTest(_ graphName: String) {
   print("VERIFY: SemiCore")
   print("-- Results: \(graph.kCore(type: .semiCore))")
   print("--------------------------------\n")
-  print("VERIFY: BottomUp")
-  print("-- Results: \(graph.kCore(type: .bottomUp))")
-  print("--------------------------------\n")
   print("VERIFY: IMCore")
   print("-- Results: \(graph.kCore(type: .imCore))")
 }
-print("ARGS: \(CommandLine.arguments)")
 
 let args = CommandLine.arguments
-
 if args.count == 1 {
   fullTest(fullTest)
 } else if args.count == 2 && args[1] == "verify" {

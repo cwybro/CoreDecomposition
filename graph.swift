@@ -4,7 +4,7 @@ public struct Graph {
     public var adjList: [[Int]]
 
     public enum RunType {
-    case semiCore, bottomUp, imCore
+    case semiCore, imCore
     }
 
     public var edges: Int {
@@ -95,7 +95,7 @@ extension Graph {
   }
 
   public func vertexWith(degree: Int) -> Bool {
-    if degree == 0 && empty {
+    if empty {
       return false
     }
 
@@ -111,7 +111,7 @@ extension Graph {
   }
 
   public func vertexFor(degree: Int) -> Int {
-    if degree == 0 || empty  {
+    if empty  {
       return -1
     }
 
@@ -127,45 +127,37 @@ extension Graph {
   }
 
   // Removes vertex & all edges incident to vertex
-  public mutating func delete(vertex: Int) {
-    guard !adjList[vertex].isEmpty else { return }
+  // Returns possibly missing vertices due to removing incident edge
+  @discardableResult
+  public mutating func delete(vertex: Int) -> [Int] {
+    guard !adjList[vertex].isEmpty else { return [] }
 
     adjList[vertex] = []
+
+    var missing = [Int]()
 
     for (index, arr) in adjList.enumerated() {
         let newArr = arr.filter { $0 != vertex }
         adjList[index] = newArr
+        if newArr.isEmpty && arr != newArr { missing.append(index) }
     }
+
+    let flat = adjList.flatMap { $0 }
+    if flat.isEmpty {
+      return missing
+    }
+    return []
   }
 }
 
 // MARK: - Solutions
 extension Graph {
     // MARK: Core Decomposition
+    @discardableResult
     public func kCore(type: RunType) -> [Int] {
         switch type {
         case .semiCore: return SemiCore.run(self)
-        case .bottomUp:
-          let result = BottomUp.run(self)
-          // print("RESULT: \(result)")
-          return result.normalizeOutput()
         case .imCore: return IMCore.run(self)
         }
-    }
-}
-
-// MARK: - Helper for BottomUp algorithm
-extension Array where Element == [Int] {
-    func normalizeOutput() -> [Int] {
-        let max = self.flatMap { $0}.max()!
-        var result = [Int](repeating: 0, count: max+1)
-
-        for (index, internalArr) in self.enumerated() {
-            for num in internalArr {
-                result[num] = index
-            }
-        }
-
-        return result
     }
 }

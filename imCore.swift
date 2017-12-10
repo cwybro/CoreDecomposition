@@ -8,14 +8,19 @@ public struct IMCore {
     var results = [Int](repeating: 0, count: mutGraph.vertices.count)
 
     while !mutGraph.empty {
-      var k = mutGraph.minDegree
+      let k = mutGraph.minDegree
 
       while mutGraph.vertexFor(degree: k) != -1 {
 
         let v = mutGraph.vertexFor(degree: k)
 
         results[v] = k
-        mutGraph.delete(vertex: v)
+
+        // Check for possibly missing vertices due to removing incident edge
+        let missing = mutGraph.delete(vertex: v)
+        if !missing.isEmpty {
+          missing.forEach { results[$0] = k }
+        }
       }
     }
     return results
