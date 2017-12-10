@@ -4,7 +4,7 @@ public struct Graph {
     public var adjList: [[Int]]
 
     public enum RunType {
-    case semiCore, bottomUp
+    case semiCore, bottomUp, imCore
     }
 
     public var edges: Int {
@@ -24,6 +24,16 @@ public struct Graph {
         }
       }
       return empty
+    }
+
+    public var minDegree: Int {
+      var min = maxDegree()
+      adjList.forEach { neighbors in
+        if neighbors.count < min && !neighbors.isEmpty {
+          min = neighbors.count
+        }
+      }
+      return min
     }
 
     public var nextVertex: Int {
@@ -72,16 +82,6 @@ extension Graph {
     return max
   }
 
-  public func minDegree() -> Int {
-    var min = maxDegree()
-    adjList.forEach { neighbors in
-      if neighbors.count < min {
-        min = neighbors.count
-      }
-    }
-    return min
-  }
-
   public func vertexDegree(_ vertex: Int) -> Int {
     return adjList[vertex].count
   }
@@ -110,14 +110,32 @@ extension Graph {
     return present
   }
 
+  public func vertexFor(degree: Int) -> Int {
+    if degree == 0 || empty  {
+      return -1
+    }
+
+    var vertex = -1
+    for (index, arr) in adjList.enumerated() {
+      if arr.count <= degree && !arr.isEmpty {
+        vertex = index
+        break
+      }
+    }
+
+    return vertex
+  }
+
   // Removes vertex & all edges incident to vertex
   public mutating func delete(vertex: Int) {
+    guard !adjList[vertex].isEmpty else { return }
+
     adjList[vertex] = []
 
-    // for (index, arr) in adjList.enumerated() {
-    //     let newArr = arr.filter { $0 != vertex }
-    //     adjList[index] = newArr
-    // }
+    for (index, arr) in adjList.enumerated() {
+        let newArr = arr.filter { $0 != vertex }
+        adjList[index] = newArr
+    }
   }
 }
 
@@ -131,6 +149,7 @@ extension Graph {
           let result = BottomUp.run(self)
           // print("RESULT: \(result)")
           return result.normalizeOutput()
+        case .imCore: return IMCore.run(self)
         }
     }
 }

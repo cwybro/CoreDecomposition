@@ -14,7 +14,7 @@ public struct BottomUp {
     var results = [[Int]](repeating: [], count: mutGraph.maxDegree()+1)
 
     while !mutGraph.empty {
-      let d = mutGraph.minDegree()
+      let d = mutGraph.minDegree
 
       while mutGraph.vertexWith(degree: d) {
         // io += 1
