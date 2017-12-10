@@ -11,13 +11,13 @@ let fullTest = ["graphs/2_2nbr_ud",
                 "graphs/512_512nbr_ud",
                 "graphs/1024_1024nbr_ud",
                 "graphs/2048_2048nbr_ud",
-                "graphs/4096_4096nbr_ud",
-                "graphs/8192_8192nbr_ud"]
+                "graphs/4096_4096nbr_ud"]//,
+                // "graphs/8192_8192nbr_ud"]
 
 let vTest = "graphs/verify"
 
 let smallTest = "graphs/2_2nbr_ud"
-let largeTest = "graphs/soc-LiveJournal1"
+let largeTest = "graphs/facebook_combined"
 
 func fullTest(_ graphs: [String]) {
   print("---- Running full test suite ----")

@@ -29,7 +29,8 @@ public struct IMCore {
 
     // Check for possibly missing vertices due to removing incident edge
     if vertices.count > 0 {
-      let vert = vertices.popFirst()!
+      guard let vert = vertices.popFirst() else { return results }
+      // let vert = vertices.popFirst()!
       results[vert] = finalDegree
     }
 
