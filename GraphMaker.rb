@@ -67,12 +67,17 @@ def createGraphNeighborsUndirected(size, nbr)
   File.delete(temp)
 end
 
-if ARGV.length == 0 || (ARGV[1] && ARGV[1] == "default")
-  puts "Create default graphs (undirected):"
-  createGraphNeighborsUndirected(1, 1)
-  createGraphNeighborsUndirected(2, 2)
-  createGraphNeighborsUndirected(4, 4)
-  createGraphNeighborsUndirected(8, 8)
+if ARGV.length == 0 || (ARGV[0] && ARGV[0] == "default")
+  if ARGV[1]
+    puts "Create default graph (undirected) with size: #{ARGV[1]}"
+    createGraphNeighborsUndirected(ARGV[1], ARGV[1])
+  else
+    puts "Create default graphs (undirected):"
+    createGraphNeighborsUndirected(1, 1)
+    createGraphNeighborsUndirected(2, 2)
+    createGraphNeighborsUndirected(4, 4)
+    createGraphNeighborsUndirected(8, 8)
+  end
 else
   size = ARGV.length == 0 ? 10 : ARGV[0]
   type = (ARGV.length == 1 || ARGV[1] != "graph") ? "path" : ARGV[1]
