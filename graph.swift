@@ -127,26 +127,15 @@ extension Graph {
   }
 
   // Removes vertex & all edges incident to vertex
-  // Returns possibly missing vertices due to removing incident edge
-  @discardableResult
-  public mutating func delete(vertex: Int) -> [Int] {
-    guard !adjList[vertex].isEmpty else { return [] }
+  public mutating func delete(vertex: Int) {
+    guard !adjList[vertex].isEmpty else { return }
 
     adjList[vertex] = []
-
-    var missing = [Int]()
 
     for (index, arr) in adjList.enumerated() {
         let newArr = arr.filter { $0 != vertex }
         adjList[index] = newArr
-        if newArr.isEmpty && arr != newArr { missing.append(index) }
     }
-
-    let flat = adjList.flatMap { $0 }
-    if flat.isEmpty {
-      return missing
-    }
-    return []
   }
 }
 
