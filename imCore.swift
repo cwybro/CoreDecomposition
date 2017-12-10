@@ -21,16 +21,11 @@ public struct IMCore {
 
         results[v] = k
         mutGraph.delete(vertex: v)
-        // Check for possibly missing vertices due to removing incident edge
-        // let missing = mutGraph.delete(vertex: v)
         vertices.remove(v)
-
-        // if !missing.isEmpty {
-        //   missing.forEach { results[$0] = k }
-        // }
       }
     }
 
+    // Check for possibly missing vertices due to removing incident edge
     if vertices.count > 0 {
       let vert = vertices.popFirst()!
       results[vert] = finalDegree
