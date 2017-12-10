@@ -73,10 +73,9 @@ if ARGV.length == 0 || (ARGV[0] && ARGV[0] == "default")
     createGraphNeighborsUndirected(ARGV[1], ARGV[1])
   else
     puts "Create default graphs (undirected):"
-    createGraphNeighborsUndirected(1, 1)
-    createGraphNeighborsUndirected(2, 2)
-    createGraphNeighborsUndirected(4, 4)
-    createGraphNeighborsUndirected(8, 8)
+    (1...14).each do |n|
+      createGraphNeighborsUndirected(2**n, 2**n)
+    end
   end
 else
   size = ARGV.length == 0 ? 10 : ARGV[0]

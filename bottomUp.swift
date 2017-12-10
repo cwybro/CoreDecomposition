@@ -3,7 +3,7 @@ import Foundation
 public struct BottomUp {
 
   public static func run(_ graph: Graph) -> [[Int]] {
-    var io = 0
+    // var io = 0
 
     var mutGraph = graph
 
@@ -14,10 +14,10 @@ public struct BottomUp {
     var results = [[Int]](repeating: [], count: mutGraph.maxDegree()+1)
 
     while !mutGraph.empty {
-      io += 1
       let d = mutGraph.minDegree()
 
       while mutGraph.vertexWith(degree: d) {
+        // io += 1
         let v = vertices.removeFirst()
 
         results[d].append(v)
@@ -28,7 +28,7 @@ public struct BottomUp {
         }
       }
     }
-    print("- BottomUp -- I/O's: \(io)\n")
+    // print("- BottomUp -- I/O's: \(io)\n")
     return results
   }
 }

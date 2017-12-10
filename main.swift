@@ -1,31 +1,37 @@
 import Foundation
 
-// let one = Graph(fileName: "graphs/1_1nbr_ud")
-// let two = Graph(fileName: "graphs/2_2nbr_ud")
-// let four = Graph(fileName: "graphs/4_4nbr_ud")
-// let eight = Graph(fileName: "graphs/8_8nbr_ud")
-//
-// [("1",one), ("2",two), ("4",four), ("8",eight)].forEach { tuple in
-//   print("\(tuple.0)")
-//   print("- bottomUp: \(tuple.1.kCore(type: .bottomUp))\n")
-//   print("- semiCore: \(tuple.1.kCore(type: .semiCore))\n")
-// }
+let graphs = ["graphs/2_2nbr_ud",
+              "graphs/4_4nbr_ud",
+              "graphs/8_8nbr_ud",
+              "graphs/16_16nbr_ud",
+              "graphs/32_32nbr_ud",
+              "graphs/64_64nbr_ud",
+              "graphs/128_128nbr_ud",
+              "graphs/256_256nbr_ud",
+              "graphs/512_512nbr_ud",
+              "graphs/1024_1024nbr_ud",
+              "graphs/2048_2048nbr_ud",
+              "graphs/4096_4096nbr_ud",
+              "graphs/8192_8192nbr_ud"]
 
-let graph = Graph(fileName: "graphs/10000_10000nbr_ud")
+graphs.forEach { name in
+  print("--------------------------------")
+  print("EXPERIMENT FOR: \(name)")
 
-var experiment = Experiment()
+  let graph = Graph(fileName: name)
+  var experiment = Experiment()
 
-experiment.add(withId: "SemiCore") {
-  graph.kCore(type: .semiCore)
+  experiment.add(withId: "SemiCore") {
+    graph.kCore(type: .semiCore)
+  }
+
+  experiment.add(withId: "BottomUp") {
+    graph.kCore(type: .bottomUp)
+  }
+
+  let result = experiment.run(trials: 3, internalLoops: 1)
+  print("Results:")
+  print("-- Average: \(result.average)\n")
+  print(result.compare(to: "SemiCore"))
+  print("--------------------------------\n")
 }
-
-experiment.add(withId: "BottomUp") {
-  graph.kCore(type: .bottomUp)
-}
-
-print("Running experiments")
-let result = experiment.run(trials: 1, internalLoops: 1)
-print("Results:")
-print("-- Average: \(result.average)\n")
-print("Compare SemiCore to BottomUp:")
-print(result.compare(to: "SemiCore"))

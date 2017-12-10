@@ -3,19 +3,20 @@ import Foundation
 public typealias Closure = () -> ()
 
 public struct Experiment {
-    
+
     private var operations: [Operation]
-    
+
     public init() {
         operations = []
     }
-    
+
     mutating public func add(withId: String, closure: @escaping Closure) {
         let operation = Operation(id: withId, block: closure)
         operations.append(operation)
     }
-    
+
     public func run(trials: Int, internalLoops: Int) -> Result {
+        print("Running experiments\n")
         var result = Result()
 
         (0..<trials).forEach { _ in
@@ -30,7 +31,7 @@ public struct Experiment {
         }
         return result
     }
-    
+
     private func timer(_ loops: Int, closure: Closure) -> TimeInterval {
         let now = Date()
         (0..<loops).forEach { _ in closure() }
@@ -45,7 +46,7 @@ public struct Operation {
 
 public struct Result {
     public var times: [String : [TimeInterval]] = [:]
-    
+
     public var average: [String : TimeInterval] {
         var avg: [String : TimeInterval] = [:]
         times.forEach { (key, value) in
@@ -54,7 +55,7 @@ public struct Result {
         }
         return avg
     }
-    
+
     public var sum: [String : TimeInterval] {
         var sum: [String : TimeInterval] = [:]
         times.forEach { (key, value) in
@@ -63,11 +64,11 @@ public struct Result {
         }
         return sum
     }
-    
+
     public func compare(to id: String) {
         var text = "Comparison for \(id):\n"
         guard let idTime = sum[id] else { return }
-        
+
         sum.forEach { (key, value) in
             if key != id {
                 let speedup = (value/idTime > 1) ? value / idTime : idTime / value
@@ -77,7 +78,7 @@ public struct Result {
         }
         print(text)
     }
-    
+
     mutating func add(time: TimeInterval, forId: String) {
         if times[forId] != nil {
             times[forId] = times[forId]! + [time]
