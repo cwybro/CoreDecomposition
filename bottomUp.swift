@@ -12,24 +12,32 @@ public struct BottomUp {
     // mutGraph.sorted()
 
 
-    var vertices = mutGraph.vertexListSortedByDegree()
-    // print("Graph after sorting: \(mutGraph)")
+    // Vertices in ascending order by degree
+    var vertices = mutGraph.vertices.sorted { left, right in
+      graph.vertexDegree(left) < graph.vertexDegree(right)
+    }
+    // print("VERTICES: \(vertices)")
 
-    var results = [[Int]](repeating: [], count: mutGraph.maxDegree())
+    var results = [[Int]](repeating: [], count: mutGraph.maxDegree()+1)
 
     while !mutGraph.empty {
-      print("-- NOT EMPTY: \(mutGraph)")
+      // print("-- NOT EMPTY: \(mutGraph)")
       io += 1
       let d = mutGraph.minDegree()
+      // print("MIN: \(d)")
       while mutGraph.vertexWith(degree: d) {
-        print("---- VERTEX WITH DEGREE \(d): \(mutGraph)")
+        // print("---- VERTEX WITH DEGREE \(d): \(mutGraph)")
         // let v = mutGraph.nextVertex
         let v = vertices.removeFirst()
+        // print("---- VERTICES: \(vertices)")
         results[d].append(v)
         mutGraph.delete(vertex: v)
         // mutGraph.sorted()
-        vertices = mutGraph.vertexListSortedByDegree()
-        print("---- AFTER CHANGES: \(mutGraph)")
+        vertices = vertices.sorted { left, right in
+          graph.vertexDegree(left) < graph.vertexDegree(right)
+        }
+        // print("---- VERTICES: \(vertices)")
+        // print("---- AFTER CHANGES: \(mutGraph)")
       }
     }
 

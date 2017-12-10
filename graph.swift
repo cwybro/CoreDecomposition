@@ -7,6 +7,10 @@ public struct Graph {
     case semiCore, bottomUp
     }
 
+    public var edges: Int {
+      return adjList.count
+    }
+
     public var size: Int {
         return adjList.count
     }
@@ -33,11 +37,15 @@ public struct Graph {
       return v
     }
 
+    public var vertices: [Int] {
+      return Array(0..<adjList.count)
+    }
+
     // Convenience init with filename
     public init(fileName: String) {
         adjList = []
         if let result = FileReader.read(fileName) {
-            adjList = Array(repeating: [], count: result.points+1)
+            adjList = Array(repeating: [], count: result.vertices)
             result.tuples.forEach { addEdge(from: $0.0, to: $0.1) }
         }
         print("Loaded graph of size: \(size)\n")
@@ -86,12 +94,13 @@ extension Graph {
     adjList.sort { $0.count < $1.count }
   }
 
-  public func vertexListSortedByDegree() -> [Int] {
-    let vertices = Array(0..<adjList.count)
-    return vertices.sorted { vertexDegree($0) < vertexDegree($1) }
-  }
-
   public func vertexWith(degree: Int) -> Bool {
+    if degree == 0 && empty {
+      return false
+    }
+
+    guard !empty else { return false }
+
     var present = false
     adjList.forEach {
       if $0.count <= degree {
@@ -103,12 +112,12 @@ extension Graph {
 
   // Removes vertex & all edges incident to vertex
   public mutating func delete(vertex: Int) {
-    adjList.remove(at: vertex)
+    adjList[vertex] = []
 
-    for (index, arr) in adjList.enumerated() {
-        let newArr = arr.filter { $0 != vertex }
-        adjList[index] = newArr
-    }
+    // for (index, arr) in adjList.enumerated() {
+    //     let newArr = arr.filter { $0 != vertex }
+    //     adjList[index] = newArr
+    // }
   }
 }
 
@@ -120,7 +129,7 @@ extension Graph {
         case .semiCore: return SemiCore.run(self)
         case .bottomUp:
           let result = BottomUp.run(self)
-          print("RESULT: \(result)")
+          // print("RESULT: \(result)")
           return result.normalizeOutput()
         }
     }

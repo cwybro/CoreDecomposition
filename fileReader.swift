@@ -1,7 +1,8 @@
 import Foundation
 
 public struct FileResult {
-    let points: Int
+    let vertices: Int
+    let edges: Int
     let tuples: [(Int, Int)]
 }
 
@@ -11,13 +12,21 @@ public class FileReader {
             do {
                 let data = try String(contentsOfFile: path, encoding: .utf8)
                 var contents = data.components(separatedBy: .newlines).filter { !$0.isEmpty }
-                let sizeStr = String(describing: contents.removeFirst())
-                guard let size = Int(sizeStr) else {
+
+                let edgeStr = String(describing: contents.removeFirst())
+                guard let edges = Int(edgeStr) else {
+                  print("Wrong format")
+                  return nil
+                }
+
+                let vertexStr = String(describing: contents.removeFirst())
+                guard let vertices = Int(vertexStr) else {
                     print("Wrong format")
                     return nil
                 }
-                let result = FileResult(points: size, tuples:contents.parse())
-                
+
+                let result = FileResult(vertices: vertices, edges: edges, tuples:contents.parse())
+
                 return result
             } catch {
                 print(error)
@@ -36,4 +45,3 @@ public extension Array where Element == String {
         }
     }
 }
-
