@@ -14,10 +14,14 @@ let fullTest = ["graphs/2_2nbr_ud",
                 "graphs/4096_4096nbr_ud"]//,
                 // "graphs/8192_8192nbr_ud"]
 
+let wenGraphs = [//"graphs/wenPaper/DBLP",
+                 // "graphs/wenPaper/youtube",
+                 "graphs/wenPaper/LiveJournal"]
+
 let vTest = "graphs/verify"
 
 let smallTest = "graphs/2_2nbr_ud"
-let largeTest = "graphs/facebook_combined"
+let largeTest = "graphs/amazon"
 
 func fullTest(_ graphs: [String]) {
   print("---- Running full test suite ----")
@@ -88,6 +92,32 @@ func specificTest(_ type: TestType) {
   print("--------------------------------\n")
 }
 
+func paperTest(_ graphs: [String]) {
+  print("---- Running paper test suite ----")
+
+  graphs.forEach { name in
+    print("--------------------------------")
+    print("EXPERIMENT FOR: \(name)")
+
+    let graph = Graph(fileName: name)
+    var experiment = Experiment()
+
+    experiment.add(withId: "SemiCore") {
+      graph.kCore(type: .semiCore)
+    }
+
+    experiment.add(withId: "IMCore") {
+      graph.kCore(type: .imCore)
+    }
+
+    let result = experiment.run(trials: 3, internalLoops: 1)
+    print("Results:")
+    print("-- Average: \(result.average)\n")
+    print(result.compare(to: "SemiCore"))
+    print("--------------------------------\n")
+  }
+}
+
 func report_memory() -> mach_vm_size_t {
     var info = mach_task_basic_info()
     var count = mach_msg_type_number_t(MemoryLayout<mach_task_basic_info>.size)/4
@@ -119,4 +149,6 @@ if args.count == 1 {
 } else if args.count == 2 && (args[1] == "large" || args[1] == "small") {
   let type: TestType = args[1] == "large" ? .large : .small
   specificTest(type)
+} else if args.count == 2 && args[1] == "paper" {
+  paperTest(wenGraphs)
 }

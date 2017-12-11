@@ -40,7 +40,7 @@ public class FileReader {
 public extension Array where Element == String {
     public func parse() -> [(Int, Int)] {
         return self.map { str in
-            let arr = str.components(separatedBy: .whitespaces)
+            let arr = str.components(separatedBy: .whitespaces).filter { $0 != "" }
             return (Int(arr[0])!,Int(arr[1])!)
         }
     }
