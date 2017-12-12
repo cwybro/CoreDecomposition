@@ -3,6 +3,7 @@ import Foundation
 public struct IMCore {
 
   public static func run(_ graph: Graph) -> [Int] {
+    // print("IMCORE")
     let startMem = report_memory()
 
     var mutGraph = graph

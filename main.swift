@@ -1,24 +1,12 @@
 import Foundation
 
-let fullTest = ["graphs/2_2nbr_ud",
-                "graphs/4_4nbr_ud",
-                "graphs/8_8nbr_ud",
-                "graphs/16_16nbr_ud",
-                "graphs/32_32nbr_ud",
-                "graphs/64_64nbr_ud",
-                "graphs/128_128nbr_ud",
-                "graphs/256_256nbr_ud",
-                "graphs/512_512nbr_ud",
-                "graphs/1024_1024nbr_ud",
-                "graphs/2048_2048nbr_ud",
-                "graphs/4096_4096nbr_ud"]//,
-                // "graphs/8192_8192nbr_ud"]
+let fullSuite = (1...12).map { "graphs/udSuite/\(pow(2,$0))_\(pow(2,$0))nbr_ud" }
 
-let wenGraphs = [//"graphs/wenPaper/DBLP",
-                 // "graphs/wenPaper/youtube",
-                 "graphs/wenPaper/LiveJournal"]
+let pathSuite = (1...13).map { "graphs/pathSuite/path_\(pow(2,$0))" }
 
-let vTest = "graphs/verify"
+let snapSuite = ["graphs/snapSuite/youtube"]
+
+let vTest = "graphs/verify_small"
 
 let smallTest = "graphs/2_2nbr_ud"
 let largeTest = "graphs/amazon"
@@ -92,8 +80,8 @@ func specificTest(_ type: TestType) {
   print("--------------------------------\n")
 }
 
-func paperTest(_ graphs: [String]) {
-  print("---- Running paper test suite ----")
+func snapTest(_ graphs: [String]) {
+  print("---- Running SNAP test suite ----")
 
   graphs.forEach { name in
     print("--------------------------------")
@@ -110,7 +98,7 @@ func paperTest(_ graphs: [String]) {
       graph.kCore(type: .imCore)
     }
 
-    let result = experiment.run(trials: 3, internalLoops: 1)
+    let result = experiment.run(trials: 1, internalLoops: 1)
     print("Results:")
     print("-- Average: \(result.average)\n")
     print(result.compare(to: "SemiCore"))
@@ -141,14 +129,42 @@ func report_memory() -> mach_vm_size_t {
     }
 }
 
+func singleTest(_ graphs: [String]) {
+  print("---- Running path test suite ----")
+
+  graphs.forEach { name in
+    print("--------------------------------")
+    print("EXPERIMENT FOR: \(name)")
+
+    let graph = Graph(fileName: name)
+    var experiment = Experiment()
+
+    experiment.add(withId: "SemiCore") {
+      graph.kCore(type: .semiCore)
+    }
+
+    experiment.add(withId: "IMCore") {
+      graph.kCore(type: .imCore)
+    }
+
+    let result = experiment.run(trials: 3, internalLoops: 1)
+    print("Results:")
+    print("-- Average: \(result.average)\n")
+    print(result.compare(to: "SemiCore"))
+    print("--------------------------------\n")
+  }
+}
+
 let args = CommandLine.arguments
 if args.count == 1 {
-  fullTest(fullTest)
+  fullTest(fullSuite)
 } else if args.count == 2 && args[1] == "verify" {
   verifyTest(vTest)
 } else if args.count == 2 && (args[1] == "large" || args[1] == "small") {
   let type: TestType = args[1] == "large" ? .large : .small
   specificTest(type)
-} else if args.count == 2 && args[1] == "paper" {
-  paperTest(wenGraphs)
+} else if args.count == 2 && args[1] == "snap" {
+  snapTest(snapSuite)
+} else if args.count == 2 && args[1] == "path" {
+  singleTest(pathSuite)
 }
